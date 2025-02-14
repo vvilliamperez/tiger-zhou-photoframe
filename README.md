@@ -16,7 +16,7 @@ Notes and Utilities for Shenzen Fujia Technologies 10.1 in Digital Photoframe
 If you can't see the IP address on your network, you can grab it in the photoframe UI:
 
 1. Go to **Settings > About > Build Number**  
-2. Tap **Build Number** multiple times until Developer Settings unlock.  
+2. Tap **Build Number** multiple times until the custom UI throws you into the normal Android Settings app.
 3. Navigate to **WiFi > … (Menu) > Advanced**  
 4. Note the IP address listed.
 
