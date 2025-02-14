@@ -1,5 +1,5 @@
 # tiger-zhou-photoframe
-Notes and Utilities for Shenzen Fujia Technologies 10.1 in Digital Photoframe
+Notes and Utilities for Tiger Zhou 10.1 in Digital Photoframe
 
 
 # ADB Access on Shenzen Fujia Digital Photo Frame
