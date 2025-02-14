@@ -1,4 +1,4 @@
-# shenzen-fujia-photoframe
+# tiger-zhou-photoframe
 Notes and Utilities for Shenzen Fujia Technologies 10.1 in Digital Photoframe
 
 
@@ -30,7 +30,7 @@ For Christmas, I received a digital photo frame from a family member. After some
 
 After some frustration, I realized the device runs **Android** and decided to gain ADB access.
 
-I couldn't find the exact model on Amazon, but from the [Google Play listing for vPhoto](https://play.google.com/store/apps/details?id=com.waophoto.smartphoto&hl=en_US&pli=1), it's made by **Shenzhen Fujia Technology Co., Ltd.**
+I couldn't find the exact model on Amazon, but it appears to manufactured by a **Tiger-Zhou UG** while the app from the [Google Play listing for vPhoto](https://play.google.com/store/apps/details?id=com.waophoto.smartphoto&hl=en_US&pli=1), is made by **Shenzhen Fujia Technology Co., Ltd.**
 
 ---
 
