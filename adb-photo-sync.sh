@@ -9,7 +9,7 @@ echo "🔌 Connecting to ADB device at $FRAME_IP..."
 adb connect "$FRAME_IP" || { echo "❌ ADB connection failed"; exit 1; }
 
 echo "📂 Syncing photos to the frame..."
-adb-sync "$SYNC_FOLDER/" "$FRAME_SYNC_PATH" || { echo "❌ Sync failed"; exit 1; }
+adb push "$SYNC_FOLDER/" "$FRAME_SYNC_PATH" || { echo "❌ Sync failed"; exit 1; }
 
 echo "🔄 Triggering Media Scanner..."
 adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d "file://$FRAME_SYNC_PATH" || { echo "❌ Failed to trigger media scan"; exit 1; }
