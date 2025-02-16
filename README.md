@@ -33,6 +33,8 @@ After you push a file there you will need to run an intent to refresh the galler
 adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Pictures/
 ```
 
+**Notes:** It seems to only like files of a certain size, either file size or resolution. 
+
 ---
 
 ## Background
