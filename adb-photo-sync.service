@@ -3,8 +3,7 @@ Description=ADB Photo Sync Service
 After=network.target
 
 [Service]
-Environment="FRAME_IP=192.168.1.XXX"  # 🔹 Set your frame's IP here!
-ExecStart=/usr/local/bin/adb-photo-sync
+ExecStart=/home/pi/adb-photo-sync/adb-photo-sync.sh
 Restart=always
 User=pi
 Group=pi
