@@ -21,15 +21,6 @@ else
     echo "✅ adb is installed!"
 fi
 
-# Check if adbsync is installed
-if ! command -v adbsync &> /dev/null; then
-    echo "❌ adbsync is not installed!"
-    echo "📌 Please install adbsync using: pip install --user git+https://github.com/google/adb-sync.git"
-    exit 1
-else
-    echo "✅ adbsync is installed!"
-fi
-
 echo "📁 Creating sync directory at $INSTALL_DIR..."
 mkdir -p "$INSTALL_DIR"
 
@@ -37,13 +28,13 @@ echo "🚀 Setting up the sync script..."
 cat <<EOF > "$SCRIPT_FILE"
 #!/bin/bash
 
-# Ensure ~/.local/bin is in the PATH for adbsync
+# Ensure ~/.local/bin is in the PATH for adb
 export PATH="\$HOME/.local/bin:\$PATH"
 
 # Configuration
 FRAME_IP="$FRAME_IP"
 SYNC_FOLDER="$INSTALL_DIR"
-FRAME_SYNC_PATH="/storage/emulated/0/Pictures/"
+FRAME_SYNC_PATH="/storage/emulated/0/Pictures"
 
 echo "🔌 Connecting to ADB device at \$FRAME_IP..."
 adb connect "\$FRAME_IP"
@@ -53,11 +44,11 @@ if [ \$ADB_STATUS -ne 0 ]; then
     exit 1
 fi
 
-echo "📂 Syncing photos to the frame..."
-adbsync "\$SYNC_FOLDER/" "\$FRAME_SYNC_PATH"
-SYNC_STATUS=\$?
-if [ \$SYNC_STATUS -ne 0 ]; then
-    echo "❌ Sync failed (Exit Code: \$SYNC_STATUS)"
+echo "📂 Pushing photos to the frame..."
+adb push "\$SYNC_FOLDER/" "\$FRAME_SYNC_PATH"
+PUSH_STATUS=\$?
+if [ \$PUSH_STATUS -ne 0 ]; then
+    echo "❌ File push failed (Exit Code: \$PUSH_STATUS)"
     exit 1
 fi
 
