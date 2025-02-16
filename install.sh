@@ -2,14 +2,12 @@
 
 # Define variables
 INSTALL_DIR="$HOME/adb-photo-sync"
-SERVICE_FILE="/etc/systemd/system/adb-photo-sync.service"
+SYSTEMD_DIR="$HOME/.config/systemd/user"
+SERVICE_FILE="$SYSTEMD_DIR/adb-photo-sync.service"
 SCRIPT_FILE="$INSTALL_DIR/adb-photo-sync.sh"
 
-# Ensure script is run as root for systemd service installation
-if [ "$(id -u)" -ne 0 ]; then
-    echo "❌ Please run this script as root using sudo."
-    exit 1
-fi
+# Ensure ~/.local/bin is in PATH for the script
+export PATH="$HOME/.local/bin:$PATH"
 
 # Prompt user for the frame's IP address
 read -p "Enter the IP address of the smart photo frame: " FRAME_IP
@@ -23,13 +21,13 @@ else
     echo "✅ adb is installed!"
 fi
 
-# Check if adb-sync is installed
-if ! command -v adb-sync &> /dev/null; then
-    echo "❌ adb-sync is not installed!"
-    echo "📌 Please install adb-sync using: pip install git+https://github.com/google/adb-sync.git"
+# Check if adbsync is installed
+if ! command -v adbsync &> /dev/null; then
+    echo "❌ adbsync is not installed!"
+    echo "📌 Please install adbsync using: pip install --user git+https://github.com/google/adb-sync.git"
     exit 1
 else
-    echo "✅ adb-sync is installed!"
+    echo "✅ adbsync is installed!"
 fi
 
 echo "📁 Creating sync directory at $INSTALL_DIR..."
@@ -39,27 +37,49 @@ echo "🚀 Setting up the sync script..."
 cat <<EOF > "$SCRIPT_FILE"
 #!/bin/bash
 
+# Ensure ~/.local/bin is in the PATH for adbsync
+export PATH="\$HOME/.local/bin:\$PATH"
+
 # Configuration
 FRAME_IP="$FRAME_IP"
 SYNC_FOLDER="$INSTALL_DIR"
 FRAME_SYNC_PATH="/storage/emulated/0/Pictures/"
 
 echo "🔌 Connecting to ADB device at \$FRAME_IP..."
-adb connect "\$FRAME_IP" || { echo "❌ ADB connection failed"; exit 1; }
+adb connect "\$FRAME_IP"
+ADB_STATUS=\$?
+if [ \$ADB_STATUS -ne 0 ]; then
+    echo "❌ ADB connection failed (Exit Code: \$ADB_STATUS)"
+    exit 1
+fi
 
 echo "📂 Syncing photos to the frame..."
-adb-sync "\$SYNC_FOLDER/" "\$FRAME_SYNC_PATH" || { echo "❌ Sync failed"; exit 1; }
+adbsync "\$SYNC_FOLDER/" "\$FRAME_SYNC_PATH"
+SYNC_STATUS=\$?
+if [ \$SYNC_STATUS -ne 0 ]; then
+    echo "❌ Sync failed (Exit Code: \$SYNC_STATUS)"
+    exit 1
+fi
 
 echo "🔄 Triggering Media Scanner..."
-adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d "file://\$FRAME_SYNC_PATH" || { echo "❌ Failed to trigger media scan"; exit 1; }
+adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d "file://\$FRAME_SYNC_PATH"
+SCAN_STATUS=\$?
+if [ \$SCAN_STATUS -ne 0 ]; then
+    echo "❌ Failed to trigger media scan (Exit Code: \$SCAN_STATUS)"
+    exit 1
+fi
 
 echo "✅ Sync completed successfully!"
 EOF
 
+# Make the script executable
 chmod +x "$SCRIPT_FILE"
 
-echo "📝 Creating systemd service at $SERVICE_FILE..."
-cat <<EOF > $SERVICE_FILE
+echo "📁 Creating systemd user directory at $SYSTEMD_DIR..."
+mkdir -p "$SYSTEMD_DIR"
+
+echo "📝 Creating user systemd service at $SERVICE_FILE..."
+cat <<EOF > "$SERVICE_FILE"
 [Unit]
 Description=ADB Photo Sync Service
 After=network.target
@@ -67,22 +87,22 @@ After=network.target
 [Service]
 ExecStart=$SCRIPT_FILE
 Restart=always
-User=pi
-Group=pi
+User=$USER
+Group=$USER
 WorkingDirectory=$INSTALL_DIR
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=journal
+StandardError=journal
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
 
-echo "🔄 Reloading systemd and enabling the service..."
-systemctl daemon-reload
-systemctl enable adb-photo-sync
-systemctl start adb-photo-sync
+echo "🔄 Reloading user systemd and enabling the service..."
+systemctl --user daemon-reload
+systemctl --user enable adb-photo-sync
+systemctl --user start adb-photo-sync
 
 echo "✅ Installation complete!"
 echo "📂 Sync folder: $INSTALL_DIR"
-echo "⚙️ Service name: adb-photo-sync.service"
-echo "🔍 Check status: sudo systemctl status adb-photo-sync"
+echo "⚙️ User Service Name: adb-photo-sync.service"
+echo "🔍 Check status: systemctl --user status adb-photo-sync"
