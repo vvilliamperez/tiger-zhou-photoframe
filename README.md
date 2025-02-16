@@ -22,6 +22,17 @@ If you can't see the IP address on your network, you can grab it in the photofra
 
 **Note:** I haven't found a way to enable ADB over USB.
 
+
+# Photo Directory and File Discovery
+
+The local photo directory is located at `/storage/emulated/0/Pictures/`.
+
+After you push a file there you will need to run an intent to refresh the gallery.
+
+```sh
+adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Pictures/
+```
+
 ---
 
 ## Background
