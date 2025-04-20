@@ -1,0 +1,14 @@
+{
+  "name": "photo-frame-server",
+  "version": "1.0.0",
+  "description": "Server for photo frame uploads",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "dotenv": "^16.0.3"
+  }
+} 
