@@ -1,10 +1,27 @@
 # tiger-zhou-photoframe
 Notes and Utilities for Tiger Zhou 10.1 in Digital Photoframe
 
+## Background
 
-# ADB Access on Shenzen Fujia Digital Photo Frame
+For Christmas, I received a digital photo frame from a family member. After some time, I tried setting it up, but the companion app had issues with iOS album permissions. The app required access to my **entire photo library**, rather than allowing selective sharing.  
 
-## Getting ADB Access
+After some frustration, I realized the device runs **Android** and decided to gain ADB access. 
+**They left the device with root access**, so it was easy to tinker with.
+
+I couldn't find the exact model on Amazon, but it appears to manufactured by a **Tiger-Zhou UG** while the app from the [Google Play listing for vPhoto](https://play.google.com/store/apps/details?id=com.waophoto.smartphoto&hl=en_US&pli=1), is made by **Shenzhen Fujia Technology Co., Ltd.**
+
+
+## Webserver
+
+I made a node webserver that allows me to upload files directly to the photoframe from a browser. I have it running the adb commands in the background after getting uploads. 
+
+
+---
+
+
+
+## Getting ADB Access 
+
 
 1. Connect to WiFi using the custom user interface.  
 2. Use the following command to connect via ADB:
@@ -37,17 +54,4 @@ adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:
 
 ---
 
-## Background
-
-For Christmas, I received a digital photo frame from a family member. After some time, I tried setting it up, but the companion app had issues with iOS album permissions. The app required access to my **entire photo library**, rather than allowing selective sharing.  
-
-After some frustration, I realized the device runs **Android** and decided to gain ADB access.
-
-I couldn't find the exact model on Amazon, but it appears to manufactured by a **Tiger-Zhou UG** while the app from the [Google Play listing for vPhoto](https://play.google.com/store/apps/details?id=com.waophoto.smartphoto&hl=en_US&pli=1), is made by **Shenzhen Fujia Technology Co., Ltd.**
-
----
-
-## Next Steps
-
-I'm planning to add an **SMB or other file server** to drop photos onto the frame over the network, instead of using their app or an SD card.
 
